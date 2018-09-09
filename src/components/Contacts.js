@@ -1,53 +1,40 @@
 import React, { Component, Fragment } from "react";
 import Contact from "./Contact";
+import { Consumer } from "../context";
 
 class Contacts extends Component {
-  state = {
-    contacts: [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "jdoe@gmail.com",
-        phone: "555-555-5555"
-      },
-      {
-        id: 2,
-        name: "Karen Williams",
-        email: "kwil@gmail.com",
-        phone: "222-222-5555"
-      },
-      {
-        id: 3,
-        name: "Harry Potter",
-        email: "hopot@gmail.com",
-        phone: "333-333-3333"
+  onClickHandler = (dispatch, action) => {
+    dispatch({
+      type: "ADD_CONTACT",
+      payload: {
+        id: 0,
+        name: "Palkó Richárd",
+        phone: "06304321142",
+        email: "palric91@gmail.com"
       }
-    ]
-  };
-
-  deleteContact = id => {
-    const newContacts = this.state.contacts.filter(
-      contact => contact.id !== id
-    );
-
-    this.setState({
-      contacts: newContacts
     });
   };
 
   render() {
-    const { contacts } = this.state;
-
     return (
-      <Fragment>
-        {contacts.map(contact => (
-          <Contact
-            contact={contact}
-            key={contact.id}
-            deleteContact={this.deleteContact.bind(this, contact.id)}
-          />
-        ))}
-      </Fragment>
+      <Consumer>
+        {value => {
+          const { contacts, dispatch } = value;
+          return (
+            <Fragment>
+              {contacts.map(contact => (
+                <Contact contact={contact} key={contact.id} />
+              ))}
+              <button
+                className="btn btn-primary"
+                onClick={this.onClickHandler.bind(this, dispatch)}
+              >
+                click
+              </button>
+            </Fragment>
+          );
+        }}
+      </Consumer>
     );
   }
 }
