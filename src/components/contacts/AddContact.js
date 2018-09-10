@@ -6,7 +6,8 @@ class AddContact extends Component {
   state = {
     name: "",
     email: "",
-    phone: ""
+    phone: "",
+    errors: {}
   };
 
   onChange = e => {
@@ -17,14 +18,41 @@ class AddContact extends Component {
 
   handleAddContact = (dispatch, contact, contacts, e) => {
     e.preventDefault();
+
+    //Check for errors
+    const { phone, name, email } = this.state;
+
+    if (name === "") {
+      this.setState({
+        errors: { name: "name is required!" }
+      });
+      return;
+    }
+
+    if (email === "") {
+      this.setState({
+        errors: { email: "email is required!" }
+      });
+      return;
+    }
+
+    if (phone === "") {
+      this.setState({
+        errors: { phone: "phone is required!" }
+      });
+      return;
+    }
+
     dispatch({
       type: "ADD_CONTACT",
       payload: { ...contact, id: contacts[contacts.length - 1].id + 1 }
     });
+
     this.setState({
       name: "",
       email: "",
-      phone: ""
+      phone: "",
+      errors: {}
     });
   };
 
@@ -45,15 +73,20 @@ class AddContact extends Component {
                     contacts
                   )}
                 >
-                  {Object.keys(this.state).map((key, i) => (
-                    <TextInputGroup
-                      key={i}
-                      name={key}
-                      value={this.state[key]}
-                      onChange={this.onChange}
-                      required
-                    />
-                  ))}
+                  {Object.keys(this.state).map((key, i) => {
+                    if (key !== "errors") {
+                      return (
+                        <TextInputGroup
+                          key={i}
+                          name={key}
+                          value={this.state[key]}
+                          onChange={this.onChange}
+                          error={this.state.errors[key]}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
                   <input
                     type="submit"
                     value="Add Contact"
