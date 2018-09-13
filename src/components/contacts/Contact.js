@@ -8,7 +8,7 @@ class Contact extends Component {
   };
 
   state = {
-    showContent: true
+    showContent: false
   };
 
   contentShowHandler = () => {
