@@ -1,7 +1,7 @@
 {
-  "name": "clientmanager",
+  "name": "contactmanager",
   "version": "0.1.0",
-  "homepage": "https://palric91.github.io/clientmanager",
+  "homepage": "https://palric91.github.io/contactmanager",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
