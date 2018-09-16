@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import TextInputGroup from "../layout/TextInputGroup";
 import { Consumer } from "../../context";
 import axios from "axios";
+// import * from 'react-router-dom'
 
-class AddContact extends Component {
+class EditContact extends Component {
   state = {
     name: "",
     email: "",
@@ -17,7 +18,21 @@ class AddContact extends Component {
     });
   };
 
-  handleAddContact = async (dispatch, contact, e) => {
+  componentDidMount = async () => {
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${this.props.match.params.id}`
+    );
+
+    const { name, email, phone } = res.data;
+
+    this.setState({
+      name,
+      email,
+      phone
+    });
+  };
+
+  handleEditContact = async (dispatch, e) => {
     e.preventDefault();
 
     //Check for errors
@@ -45,15 +60,15 @@ class AddContact extends Component {
     }
 
     const newContact = { phone, name, email };
-
-    const res = await axios.post(
-      "https://jsonplaceholder.typicode.com/users",
+    const { id } = this.props.match.params;
+    const res = await axios.put(
+      `https://jsonplaceholder.typicode.com/users/${id}`,
       newContact
     );
 
     dispatch({
-      type: "ADD_CONTACT",
-      payload: { ...contact, id: res.data }
+      type: "EDIT_CONTACT",
+      payload: res.data
     });
 
     this.setState({
@@ -70,35 +85,30 @@ class AddContact extends Component {
     return (
       <Consumer>
         {value => {
-          const { dispatch, contacts } = value;
+          const { dispatch } = value;
           return (
             <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
+              <div className="card-header">Edit Contact</div>
               <div className="card-body">
-                <form
-                  onSubmit={this.handleAddContact.bind(
-                    this,
-                    dispatch,
-                    this.state
-                  )}
-                >
-                  {Object.keys(this.state).map((key, i) => {
-                    if (key !== "errors") {
-                      return (
-                        <TextInputGroup
-                          key={i}
-                          name={key}
-                          value={this.state[key]}
-                          onChange={this.onChange}
-                          error={this.state.errors[key]}
-                        />
-                      );
-                    }
-                    return null;
-                  })}
+                <form onSubmit={this.handleEditContact.bind(this, dispatch)}>
+                  {this.state.name &&
+                    Object.keys(this.state).map((key, i) => {
+                      if (key !== "errors") {
+                        return (
+                          <TextInputGroup
+                            key={i}
+                            name={key}
+                            value={this.state[key]}
+                            onChange={this.onChange}
+                            error={this.state.errors[key]}
+                          />
+                        );
+                      }
+                      return null;
+                    })}
                   <input
                     type="submit"
-                    value="Add Contact"
+                    value="Update Contact"
                     className="btn btn-block btn-light"
                   />
                 </form>
@@ -111,4 +121,4 @@ class AddContact extends Component {
   }
 }
 
-export default AddContact;
+export default EditContact;
