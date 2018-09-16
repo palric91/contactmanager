@@ -70,7 +70,7 @@ class AddContact extends Component {
     return (
       <Consumer>
         {value => {
-          const { dispatch, contacts } = value;
+          const { dispatch } = value;
           return (
             <div className="card mb-3">
               <div className="card-header">Add Contact</div>
