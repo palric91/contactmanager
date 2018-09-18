@@ -1,35 +1,46 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classnames from "classnames";
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
-class TextInputGroup extends Component {
-  static propTypes = {
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
-  };
+const TextInputGroup = ({
+  label,
+  name,
+  value,
+  placeholder,
+  type,
+  onChange,
+  error
+}) => {
+  return (
+    <div className="form-group">
+      <label htmlFor={name}>{label}</label>
+      <input
+        type={type}
+        name={name}
+        className={classnames('form-control form-control-lg', {
+          'is-invalid': error
+        })}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+      {error && <div className="invalid-feedback">{error}</div>}
+    </div>
+  );
+};
 
-  render() {
-    const { name, value, onChange, error } = this.props;
-    return (
-      <div className="form-group">
-        <label htmlFor={name}>
-          {name.charAt(0).toUpperCase() + name.slice(1)}:
-        </label>
-        <input
-          type={name}
-          className={classnames("form-control form-control-lg", {
-            "is-invalid": error
-          })}
-          name={name}
-          placeholder={`Enter ${name}...`}
-          value={value}
-          onChange={onChange}
-        />
-        {error && <p className="invalid-feedback">{this.props.error}</p>}
-      </div>
-    );
-  }
-}
+TextInputGroup.propTypes = {
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  error: PropTypes.string
+};
+
+TextInputGroup.defaultProps = {
+  type: 'text'
+};
 
 export default TextInputGroup;

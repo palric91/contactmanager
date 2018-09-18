@@ -1,27 +1,40 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import Contact from "./Contact";
-import { Consumer } from "../../context";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getContacts } from "../../actions/contactActions";
 
 class Contacts extends Component {
+  static propTypes = {
+    contacts: PropTypes.array.isRequired,
+    getContacts: PropTypes.func.isRequired
+  };
+
+  componentDidMount = () => {
+    this.props.getContacts();
+  };
+
   render() {
+    const { contacts } = this.props;
+
     return (
-      <Consumer>
-        {value => {
-          const { contacts } = value;
-          return (
-            <Fragment>
-              <h1 className="display-4 mb-2">
-                <span className="text-danger">Contact</span> List
-              </h1>
-              {contacts.map(contact => (
-                <Contact contact={contact} key={contact.id} />
-              ))}
-            </Fragment>
-          );
-        }}
-      </Consumer>
+      <React.Fragment>
+        <h1 className="display-4 mb-2">
+          <span className="text-danger">Contact</span> List
+        </h1>
+        {contacts.map(contact => (
+          <Contact key={contact.id} contact={contact} />
+        ))}
+      </React.Fragment>
     );
   }
 }
 
-export default Contacts;
+const mapStateToProps = state => ({
+  contacts: state.contact.contacts
+});
+
+export default connect(
+  mapStateToProps,
+  { getContacts }
+)(Contacts);
